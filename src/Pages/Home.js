@@ -7,12 +7,14 @@ import SideBar from "../components/SideBar";
 
 const Home = () => {
   const navigate = useNavigate();
+
   const [data, setData] = useState([]);
   const [id, setId] = useState("");
 
   const [isLoading, setIsLoading] = useState(true);
   const [ordering, setOrdering] = useState("added");
-  const [boxStyle, setBoxStyle] = useState("roll");
+  const [platform, setPlatform] = useState("");
+  const [getPlatform, setGetPlatform] = useState(1);
 
   const handleClick = (elem) => {
     setId(elem);
@@ -51,23 +53,48 @@ const Home = () => {
   };
 
   let nextXdays = getNextMonth(new Date(), 3);
-  console.log(nextXdays);
+  //console.log(nextXdays);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       const response = await axios.get(
-        `http://localhost:4000/games?ordering=${ordering}&dates=${nextXdays}`
+        `http://localhost:4000/games?ordering=${ordering}&dates=${nextXdays}&parent_platforms=${getPlatform}`
       );
-      console.log(response.data);
+      /*  console.log(response.data); */
       setData(response.data);
       setIsLoading(false);
     };
 
     fetchData();
-  }, [ordering]);
+  }, [ordering, getPlatform]);
   /*  GetMonday permet de renvoyer la semaine actuelle du lundi au dimanche. */
-  console.log(data);
+  /* console.log(data); */
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      const response = await axios.get(`http://localhost:4000/platform/list`);
+      /* console.log(response.data); */
+      setPlatform(response.data);
+    };
+
+    fetchData();
+  }, []);
+  /*  GetMonday permet de renvoyer la semaine actuelle du lundi au dimanche.
+   console.log("hello", getPlatform); */
+
+  const mouseEnter = (elem) => {
+    //console.log("mon id", document.getElementById(`box${elem.id}`));
+    document.getElementById(`roll${elem.id}`).className = "roll";
+    document.getElementById(`box${elem.id}`).className = "bigger";
+  };
+
+  const mouseLeave = (elem) => {
+    document.getElementById(`roll${elem.id}`).className = "hidden";
+    document.getElementById(`box${elem.id}`).className = "box";
+  };
+
   return isLoading ? (
     <div>en chargement</div>
   ) : (
@@ -76,94 +103,153 @@ const Home = () => {
         <SideBar />
       </div>
       <div className="mainContent">
-        <h1>New and trending</h1>
-        <p>Based on player counts and release date</p>
+        <div>
+          <h1>New and trending</h1>
+        </div>
+        <div>
+          <p>Based on player counts and release date</p>
+        </div>
+        <div className="ordering">
+          <span className="padding">
+            <select
+              className="select"
+              value={ordering}
+              onChange={(event) => {
+                setOrdering(event.target.value);
+              }}
+            >
+              <option value="relevance">Relevance</option>
+              <option value="added">Date added</option>
+              <option value="name">Name</option>
 
-        <select
-          value={ordering}
-          onChange={(event) => {
-            setOrdering(event.target.value);
-          }}
-        >
-          <option value="relevance">Relevance</option>
-          <option value="added">Date added</option>
-          <option value="name">Name</option>
-
-          <option value="-released">Release date</option>
-          {/*  <option value="Popularity">Popularity</option> */}
-          <option value="-rating">Average Rating</option>
-        </select>
+              <option value="-released">Release date</option>
+              {/*  <option value="Popularity">Popularity</option> */}
+              <option value="-rating">Average Rating</option>
+            </select>
+          </span>
+          <span>
+            <select
+              className="select"
+              value={getPlatform}
+              onChange={(event) => {
+                setGetPlatform(event.target.value);
+              }}
+            >
+              {platform.results.map((elem, index) => {
+                return (
+                  <option key={index} value={elem.id}>
+                    {elem.name}
+                  </option>
+                );
+              })}
+            </select>
+          </span>
+        </div>
 
         <div className="section">
           {data.results.map((elem, index) => {
+            //console.log("mon id", `box${elem.id}`);
             return (
-              elem.background_image && (
-                <div className="box" key={index}>
-                  <div>
-                    <img
-                      src={elem.background_image}
-                      alt="illustrative du jeu"
-                    ></img>
-                  </div>
-                  <div className="details">
-                    {elem.parent_platforms &&
-                      elem.parent_platforms.map((item, index) => {
-                        if (item.platform.name === "PC") {
-                          return (
-                            <FontAwesomeIcon
-                              className="iconPlateform"
-                              icon={["fas", "desktop"]}
-                            />
-                          );
-                        }
-                        if (item.platform.name === "PlayStation") {
-                          return (
-                            <FontAwesomeIcon
-                              className="iconPlateform"
-                              icon={["fas", "gamepad"]}
-                            />
-                          );
-                        }
-                        return (
-                          <span key={index} className="iconPlateform">
-                            {item.platform.name}
+              <div key={`box${elem.id}`}>
+                {elem.background_image && (
+                  <div
+                    id={`box${elem.id}`}
+                    className="box"
+                    onMouseEnter={() => {
+                      mouseEnter(elem);
+                    }}
+                    onMouseLeave={() => {
+                      mouseLeave(elem);
+                    }}
+                  >
+                    <div>
+                      <img
+                        src={elem.background_image}
+                        alt="illustrative du jeu"
+                      ></img>
+                    </div>
+                    <div className="details">
+                      <span className="metaBox">
+                        {elem.parent_platforms && (
+                          <span>
+                            {elem.parent_platforms.map((item, index) => {
+                              if (item.platform.name === "PC") {
+                                return (
+                                  <FontAwesomeIcon
+                                    className="iconPlateform"
+                                    icon={["fas", "desktop"]}
+                                  />
+                                );
+                              }
+                              if (item.platform.name === "PlayStation") {
+                                return (
+                                  <FontAwesomeIcon
+                                    className="iconPlateform"
+                                    icon={["fas", "gamepad"]}
+                                  />
+                                );
+                              }
+                              return (
+                                <span key={index} className="iconPlateform">
+                                  {item.platform.name}
+                                </span>
+                              );
+                            })}
                           </span>
-                        );
-                      })}
-                    <div className="gameName">
-                      <h2>{elem.name}</h2>
-                    </div>
-                    <div className={boxStyle}>
-                      <div className="releaseDate">
-                        <span className="RoleText">Release Date :</span>
-                        <span className="RollValue">{elem.released}</span>
+                        )}
+                        {elem.metacritic && (
+                          <span
+                            className={`meta ${
+                              elem.metacritic >= 70 ? "green" : "orange"
+                            }  `}
+                          >
+                            {elem.metacritic}
+                          </span>
+                        )}
+                      </span>
+
+                      <div className="gameName">
+                        <h2>{elem.name}</h2>
                       </div>
-                      <div>
-                        <span className="genres">
-                          <span>Genres</span>
-                          {elem.genres.map((genre, index) => {
-                            return (
-                              <span key={index}>
-                                <span className="RollValue">{genre.name}</span>
-                              </span>
-                            );
-                          })}
-                        </span>
-                      </div>
-                      <div>
-                        <button
-                          onClick={() => {
-                            handleClick(elem);
-                          }}
-                        >
-                          {console.log(id)}
-                          Show more like this
-                        </button>
+                      <div id={`roll${elem.id}`} className="hidden">
+                        <div className="releaseDate">
+                          <span className="RoleText">Release Date :</span>
+                          <span className="RollValue">{elem.released}</span>
+                        </div>
+                        <div>
+                          <span className="genres">
+                            <span>Genres</span>
+                            <span>
+                              {elem.genres.map((genre, index) => {
+                                return (
+                                  <span key={index}>
+                                    {index === elem.genres.length - 1 ? (
+                                      <span className="RollValue">{`${genre.name}`}</span>
+                                    ) : (
+                                      <span className="RollValue">{`${genre.name},`}</span>
+                                    )}
+                                  </span>
+                                );
+                              })}
+                            </span>
+                          </span>
+                        </div>
+                        <div className="ShowMore">
+                          <button
+                            className="rollButton"
+                            onClick={() => {
+                              handleClick(elem);
+                            }}
+                          >
+                            {/*  {console.log(id)} */}
+                            Show more like this
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )
+                )}
+              </div>
             );
           })}
         </div>

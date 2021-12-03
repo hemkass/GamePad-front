@@ -53,7 +53,7 @@ const Home = () => {
   };
 
   let nextXdays = getNextMonth(new Date(), 3);
-  //console.log(nextXdays);
+  console.log(nextXdays);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,11 +61,10 @@ const Home = () => {
       const response = await axios.get(
         `http://localhost:4000/games?ordering=${ordering}&dates=${nextXdays}&parent_platforms=${getPlatform}`
       );
-      /*  console.log(response.data); */
+      console.log(response.data);
       setData(response.data);
       setIsLoading(false);
     };
-
     fetchData();
   }, [ordering, getPlatform]);
   /*  GetMonday permet de renvoyer la semaine actuelle du lundi au dimanche. */
@@ -73,9 +72,8 @@ const Home = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
       const response = await axios.get(`http://localhost:4000/platform/list`);
-      /* console.log(response.data); */
+      /*  console.log(response.data); */
       setPlatform(response.data);
     };
 
@@ -151,104 +149,102 @@ const Home = () => {
             //console.log("mon id", `box${elem.id}`);
             return (
               <div key={`box${elem.id}`}>
-                {elem.background_image && (
-                  <div
-                    id={`box${elem.id}`}
-                    className="box"
-                    onMouseEnter={() => {
-                      mouseEnter(elem);
-                    }}
-                    onMouseLeave={() => {
-                      mouseLeave(elem);
-                    }}
-                  >
+                <div
+                  id={`box${elem.id}`}
+                  className="box"
+                  onMouseEnter={() => {
+                    mouseEnter(elem);
+                  }}
+                  onMouseLeave={() => {
+                    mouseLeave(elem);
+                  }}
+                >
+                  {" "}
+                  {elem.background_image && (
                     <div>
                       <img
                         src={elem.background_image}
                         alt="illustrative du jeu"
                       ></img>
                     </div>
-                    <div className="details">
-                      <span className="metaBox">
-                        {elem.parent_platforms && (
-                          <span>
-                            {elem.parent_platforms.map((item, index) => {
-                              if (item.platform.name === "PC") {
-                                return (
+                  )}
+                  <div className="details">
+                    <span className="metaBox">
+                      {elem.parent_platforms && (
+                        <span>
+                          {elem.parent_platforms.map((item, index) => {
+                            return (
+                              <span key={index}>
+                                {item.platform.name === "PC" ? (
                                   <FontAwesomeIcon
                                     className="iconPlateform"
                                     icon={["fas", "desktop"]}
                                   />
-                                );
-                              }
-                              if (item.platform.name === "PlayStation") {
-                                return (
+                                ) : item.platform.name === "PlayStation" ? (
                                   <FontAwesomeIcon
+                                    span
                                     className="iconPlateform"
                                     icon={["fas", "gamepad"]}
                                   />
-                                );
-                              }
+                                ) : (
+                                  item.platform.name
+                                )}
+                              </span>
+                            );
+                          })}
+                        </span>
+                      )}
+                      {elem.metacritic && (
+                        <span
+                          className={`meta ${
+                            elem.metacritic >= 70 ? "green" : "orange"
+                          }  `}
+                        >
+                          {elem.metacritic}
+                        </span>
+                      )}
+                    </span>
+
+                    <div className="gameName">
+                      <h2>{elem.name}</h2>
+                    </div>
+                    <div id={`roll${elem.id}`} className="hidden">
+                      <div className="releaseDate">
+                        <span className="RoleText">Release Date :</span>
+                        <span className="RollValue">{elem.released}</span>
+                      </div>
+                      <div>
+                        <span className="genres">
+                          <span>Genres</span>
+                          <span>
+                            {elem.genres.map((genre, index) => {
                               return (
-                                <span key={index} className="iconPlateform">
-                                  {item.platform.name}
+                                <span key={index}>
+                                  {index === elem.genres.length - 1 ? (
+                                    <span className="RollValue">{`${genre.name}`}</span>
+                                  ) : (
+                                    <span className="RollValue">{`${genre.name},`}</span>
+                                  )}
                                 </span>
                               );
                             })}
                           </span>
-                        )}
-                        {elem.metacritic && (
-                          <span
-                            className={`meta ${
-                              elem.metacritic >= 70 ? "green" : "orange"
-                            }  `}
-                          >
-                            {elem.metacritic}
-                          </span>
-                        )}
-                      </span>
-
-                      <div className="gameName">
-                        <h2>{elem.name}</h2>
+                        </span>
                       </div>
-                      <div id={`roll${elem.id}`} className="hidden">
-                        <div className="releaseDate">
-                          <span className="RoleText">Release Date :</span>
-                          <span className="RollValue">{elem.released}</span>
-                        </div>
-                        <div>
-                          <span className="genres">
-                            <span>Genres</span>
-                            <span>
-                              {elem.genres.map((genre, index) => {
-                                return (
-                                  <span key={index}>
-                                    {index === elem.genres.length - 1 ? (
-                                      <span className="RollValue">{`${genre.name}`}</span>
-                                    ) : (
-                                      <span className="RollValue">{`${genre.name},`}</span>
-                                    )}
-                                  </span>
-                                );
-                              })}
-                            </span>
-                          </span>
-                        </div>
-                        <div className="ShowMore">
-                          <button
-                            className="rollButton"
-                            onClick={() => {
-                              handleClick(elem);
-                            }}
-                          >
-                            {/*  {console.log(id)} */}
-                            Show more like this
-                          </button>
-                        </div>
+                      <div className="ShowMore">
+                        <button
+                          className="rollButton"
+                          onClick={() => {
+                            handleClick(elem);
+                          }}
+                        >
+                          {/*  {console.log(id)} */}
+                          Show more like this
+                        </button>
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
               </div>
             );
           })}

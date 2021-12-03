@@ -7,6 +7,30 @@ header {
   background-color: cornflowerblue;
   width: 100vw;
 }
+
+.navLink {
+  text-decoration: none;
+}
+
+.sideBar {
+  background-color: #151515;
+  padding: 10px;
+}
+.menuIcon {
+  color: cornsilk;
+  font-size: 16px;
+  background-color: #303030;
+  padding: 5px;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.menuItem {
+  padding: 5px 0px 5px 0px;
+  display: flex;
+  align-items: center;
+}
+
 .searchBar {
   color: white;
   margin-left: 350px;
@@ -54,6 +78,7 @@ header {
   /*   margin-top: 110px;
   margin-left: 350px; */
   position: absolute;
+  z-index: 100;
   text-align: center;
   border-radius: 20px;
   width: 700px;
@@ -150,11 +175,13 @@ header {
   flex-direction: column;
 }
 
-.sideBar {
-  background-color: #151515;
-}
 .backgroundGame {
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
   position: absolute;
+  opacity: 0.65;
+  width: 100vw;
   z-index: -20;
   top: 0;
   left: 0;
@@ -236,19 +263,31 @@ h1 {
 
   margin-block-start: 0.6em;
 }
+.paddingBottom {
+  margin-bottom: 10px;
+}
 
 h2 {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 24px;
-  line-height: 28px;
+  line-height: 34px;
+
   font-weight: bold;
+  color: #ffffff;
+}
+
+h3 {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  line-height: 13px;
+  font-weight: 500px;
   color: #ffffff;
 }
 
 p {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 16px;
-  line-height: 18px;
+  font-size: 14px;
+  line-height: 11.7px;
   font-weight: 500px;
   color: #ffffff;
 }

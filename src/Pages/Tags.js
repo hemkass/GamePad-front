@@ -24,38 +24,35 @@ const Tags = () => {
   }, [id]);
 
   /*  GetMonday permet de renvoyer la semaine actuelle du lundi au dimanche. */
-  console.log(data.background_image);
-  const divStyle = {
-    backgroundImage: `url(${data.background_image})`,
-    opacity: 0.65,
-    width: "100vw",
-    backgroundSize: "cover",
-    backgroundPosition: "center center",
-    backgroundRepeat: "no-repeat",
-  };
+  /*  console.log(data.background_image); */
+
   return isLoading ? (
     <div>en chargement</div>
   ) : (
     <div className="gamewrapper">
       <div>
         <SideBar className="sideBar" />
-      </div>
+      </div>{" "}
       <div className="gamecontent">
         <div className="leftside">
           <div>
             <span>{data.released}</span>
             <span>{data.playtime}</span>
           </div>
-          <div className="title">
-            <h1>Game like : {data.name}</h1>
-          </div>
+
+          <h1>Game like : {data.name}</h1>
+
           <div>{data.description_raw} </div>
         </div>
-        <div div className="rightside">
-          hello
-        </div>
+        <div className="rightside"></div>
       </div>
-      <div style={divStyle} className="backgroundGame "></div>
+      <div
+        style={{
+          backgroundImage: `url(${data.background_image})`,
+          opacity: 0.65,
+        }}
+        className="backgroundGame "
+      ></div>
     </div>
   );
 };

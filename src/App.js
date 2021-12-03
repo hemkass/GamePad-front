@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Home from "./Pages/Home";
 import CurrentWeek from "./Pages/currentWeek";
+import LastMonth from "./Pages/LastMonth";
 
 import Header from "./components/Header";
 import Tags from "./Pages/Tags";
@@ -44,6 +45,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />}></Route>
         <Route path="/this-week" element={<CurrentWeek />}></Route>
+        <Route path="/last-month" element={<LastMonth />}></Route>
         <Route path={"/game-like-/:id"} element={<Tags />}></Route>
       </Routes>
     </Router>

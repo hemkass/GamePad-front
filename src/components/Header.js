@@ -8,31 +8,29 @@ const Header = () => {
 
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [Loading, setLoading] = useState(true);
   const [modal, setModal] = useState("hidden");
 
-  console.log("ma recherche", search);
-
-  useEffect(() => {
+  /*  console.log("ma recherche", search) */ useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
       const response = await axios.get(
         `http://localhost:4000/search?search=${search}`
       );
-      /*  console.log(response.data); */
+      console.log(response.data);
       setSearchResult(response.data);
-      setIsLoading(false);
+      setLoading(false);
     };
 
     fetchData();
   }, [search]);
-  console.log(searchResult);
+  /*  console.log(searchResult); */
 
   const handleSearch = (result) => {
+    setModal("hidden");
     navigate(`/game-like-/${result.id}`);
   };
 
-  return isLoading ? (
+  return Loading ? (
     <div>en chargement</div>
   ) : (
     <div className="header">
@@ -43,75 +41,72 @@ const Header = () => {
         <i className="gg-pentagon-top-right"></i>
       </div>
       <div className="logotext">GAMEPAD</div>
-      <input
-        className="searchBar"
-        type="search"
-        value={search}
-        onFocus={() => {
-          setModal("seachResult");
-        }}
-        onChange={(event) => {
-          setSearch(event.target.value);
-        }}
-        onBlur={() => {
-          setModal("hidden");
-        }}
-      ></input>
-      <div className={modal}>
-        {/* <div className="seachResult"> */}
-        {searchResult.results.map((result, index) => {
-          return (
-            <div
-              key={index}
-              className="resultBox"
-              onClick={() => {
-                handleSearch(result);
-              }}
-            >
+      <div>
+        <input
+          onFocus={() => {
+            setModal("seachResult");
+          }}
+          onBlur={() => {
+            setModal("hidden");
+          }}
+          className="searchBar"
+          type="search"
+          value={search}
+          onChange={(event) => {
+            setSearch(event.target.value);
+          }}
+        ></input>
+        <div className={modal}>
+          {searchResult.results.map((result, index) => {
+            return (
               <div
-                className="miniature"
+                key={index}
+                onBlur={() => {
+                  setModal("hidden");
+                }}
+                className="resultBox"
                 onClick={() => {
                   handleSearch(result);
                 }}
               >
-                <img src={result.background_image} alt="miniature du jeu"></img>
-              </div>
-              <div className="resultDetails">
-                {result.parent_platforms && (
-                  <span>
-                    <span>
-                      {result.parent_platforms.map((elem, index) => {
-                        if (elem.platform.name === "PC") {
-                          return (
+                <div
+                  className="miniature"
+                  onClick={() => {
+                    handleSearch(result);
+                  }}
+                >
+                  <img
+                    src={result.background_image}
+                    alt="miniature du jeu"
+                  ></img>
+                </div>
+                <div className="resultDetails">
+                  {result.parent_platforms &&
+                    result.parent_platforms.map((elem, index) => {
+                      return (
+                        <span key={index}>
+                          {elem.platform.name === "PC" ? (
                             <FontAwesomeIcon
                               className="iconPlateform"
                               icon={["fas", "desktop"]}
                             />
-                          );
-                        }
-                        if (elem.platform.name === "PlayStation") {
-                          return (
+                          ) : elem.platform.name === "PlayStation" ? (
                             <FontAwesomeIcon
                               className="iconPlateform"
                               icon={["fas", "gamepad"]}
                             />
-                          );
-                        }
-                        return (
-                          <span className="iconPlateform" key={index}>
-                            {elem.platform.name}
-                          </span>
-                        );
-                      })}
-                    </span>
-                  </span>
-                )}
-                <div className="titleSearch">{result.name}</div>
+                          ) : (
+                            elem.platform.name
+                          )}
+                        </span>
+                      );
+                    })}
+                  <div className="titleSearch">{result.name}</div>
+                </div>
               </div>
-            </div>
-          );
-        })}
-        {/* </div> */}
+            );
+          })}
+        </div>
       </div>
     </div>
   );

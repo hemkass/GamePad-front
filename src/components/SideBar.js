@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const SideBar = () => {
+const SideBar = ({ SideBar }) => {
+  console.log(SideBar);
   return (
-    <div className="sideBar">
-      <div>
+    <div>
+      <div className={SideBar}>
         <div className="paddingBottom">
           <h2>New Releases</h2>
         </div>

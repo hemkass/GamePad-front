@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import SideBar from "../components/SideBar";
 
-const LastMonth = () => {
+const LastMonth = ({ handleClickOutside }) => {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
@@ -89,7 +89,7 @@ const LastMonth = () => {
   return isLoading ? (
     <div>en chargement</div>
   ) : (
-    <div className="homecontent">
+    <div className="homecontent" onClick={handleClickOutside}>
       <div className="sideBar">
         <SideBar />
       </div>

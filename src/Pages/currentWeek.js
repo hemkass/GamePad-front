@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import SideBar from "../components/SideBar";
 
-const CurrentWeek = () => {
+const CurrentWeek = ({ handleClickOutside }) => {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
@@ -95,7 +95,7 @@ const CurrentWeek = () => {
   return isLoading ? (
     <div>en chargement</div>
   ) : (
-    <div className="homecontent">
+    <div className="homecontent" onClick={handleClickOutside}>
       <div className="sideBar">
         <SideBar />
       </div>

@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import SideBar from "../components/SideBar";
 
-const Home = () => {
+const Home = ({ handleClickOutside }) => {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
@@ -18,7 +18,11 @@ const Home = () => {
 
   const handleClick = (elem) => {
     setId(elem);
-    navigate(`/game-like-/${elem.id}`);
+    /*  console.log("mes screen", elem.short_screenshots); */
+    //navigate(`/game-like-/${elem.id}`)
+    navigate(`/game-like-/${elem.id}`, {
+      state: { screenshot: elem.short_screenshots, name: elem.name },
+    });
   };
 
   // Permet de n'afficher les jeux qui sortiront avant x mois ...
@@ -53,7 +57,7 @@ const Home = () => {
   };
 
   let nextXdays = getNextMonth(new Date(), 3);
-  console.log(nextXdays);
+  /* console.log(nextXdays); */
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,7 +100,7 @@ const Home = () => {
   return isLoading ? (
     <div>en chargement</div>
   ) : (
-    <div className="homecontent">
+    <div className="homecontent" onClick={handleClickOutside}>
       <div className="sideBar">
         <SideBar />
       </div>

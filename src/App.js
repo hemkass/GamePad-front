@@ -1,17 +1,23 @@
 import "./App.css";
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Cookies from "js-cookie";
 
 import Home from "./Pages/Home";
 import CurrentWeek from "./Pages/currentWeek";
 import LastMonth from "./Pages/LastMonth";
 import Screenshot from "./Pages/screenshots";
+import Log from "./Pages/Log";
+import Signup from "./Pages/Signup";
+import Game from "./Pages/Game";
 
 import Header from "./components/Header";
 import Tags from "./Pages/Tags";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
+  faCommentDots,
+  faPlus,
   faSearch,
   faDesktop,
   faCloudUploadAlt,
@@ -25,6 +31,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
+  faCommentDots,
+  faPlus,
   faSearch,
   faGamepad,
   faDesktop,
@@ -46,7 +54,15 @@ function App() {
   };
 
   const [modal, setModal] = useState("hidden");
+  const [token, setToken] = useState(Cookies.get("token") || null);
 
+  // SIGNUP AND LOGIN
+  const Login = (token) => {
+    setToken(token);
+    Cookies.set("token", token);
+  };
+
+  // Fermeture de la box des résultats de recherche
   const handleClickOutside = (event) => {
     // if (ref.current.length > 0) {
     /* console.log("hey", ref.current); */
@@ -65,6 +81,7 @@ function App() {
     <Router>
       <header>
         <Header
+          token={token}
           modal={modal}
           setModal={setModal}
           ref={ref}
@@ -93,7 +110,25 @@ function App() {
           element={<Tags handleClickOutside={handleClickOutside} />}
         ></Route>
         <Route
-          path={"/game-like-/:id/screenshot"}
+          path={"/signup"}
+          element={
+            <Signup Login={Login} handleClickOutside={handleClickOutside} />
+          }
+        ></Route>
+        <Route
+          path={"/login"}
+          element={
+            <Log Login={Login} handleClickOutside={handleClickOutside} />
+          }
+        ></Route>
+        <Route
+          path={"/game/:id"}
+          element={
+            <Game Login={Login} handleClickOutside={handleClickOutside} />
+          }
+        ></Route>{" "}
+        <Route
+          path={"/game/:id/screenshot"}
           element={<Screenshot handleClickOutside={handleClickOutside} />}
         ></Route>
       </Routes>

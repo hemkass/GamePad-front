@@ -18,9 +18,8 @@ const Home = ({ handleClickOutside }) => {
 
   const handleClick = (elem) => {
     setId(elem);
-    /*  console.log("mes screen", elem.short_screenshots); */
-    //navigate(`/game-like-/${elem.id}`)
-    navigate(`/game-like-/${elem.id}`, {
+
+    navigate(`/game/${elem.id}`, {
       state: { screenshot: elem.short_screenshots, name: elem.name },
     });
   };
@@ -63,7 +62,7 @@ const Home = ({ handleClickOutside }) => {
     const fetchData = async () => {
       setIsLoading(true);
       const response = await axios.get(
-        `http://localhost:4000/games?ordering=${ordering}&dates=${nextXdays}&parent_platforms=${getPlatform}`
+        `https://my-gamepad-backend.herokuapp.com/games?ordering=${ordering}&dates=${nextXdays}&parent_platforms=${getPlatform}`
       );
       console.log(response.data);
       setData(response.data);
@@ -76,7 +75,9 @@ const Home = ({ handleClickOutside }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get(`http://localhost:4000/platform/list`);
+      const response = await axios.get(
+        `https://my-gamepad-backend.herokuapp.com/platform/list`
+      );
       /*  console.log(response.data); */
       setPlatform(response.data);
     };
@@ -186,7 +187,6 @@ const Home = ({ handleClickOutside }) => {
                                   />
                                 ) : item.platform.name === "PlayStation" ? (
                                   <FontAwesomeIcon
-                                    span
                                     className="iconPlateform"
                                     icon={["fas", "gamepad"]}
                                   />
@@ -209,7 +209,12 @@ const Home = ({ handleClickOutside }) => {
                       )}
                     </span>
 
-                    <div className="gameName">
+                    <div
+                      className="gameName"
+                      onClick={() => {
+                        handleClick(elem);
+                      }}
+                    >
                       <h2>{elem.name}</h2>
                     </div>
                     <div id={`roll${elem.id}`} className="hidden">

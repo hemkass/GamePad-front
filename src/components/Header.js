@@ -1,10 +1,11 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Header = React.forwardRef(
-  ({ modal, setModal, handleClickOutside }, ref) => {
+  ({ modal, setModal, handleClickOutside, token }, ref) => {
     /* console.log("ref ==>", ref); */
     const navigate = useNavigate();
 
@@ -16,7 +17,7 @@ const Header = React.forwardRef(
     /*  console.log("ma recherche", search) */ useEffect(() => {
       const fetchData = async () => {
         const response = await axios.get(
-          `http://localhost:4000/search?search=${search}`
+          `https://my-gamepad-backend.herokuapp.com/search?search=${search}`
         );
         /* console.log("mesdatas", response.data); */
         setSearchResult(response.data);
@@ -28,23 +29,25 @@ const Header = React.forwardRef(
     /*  console.log(searchResult); */
 
     const handleSearch = (result) => {
+      /* console.log("mon item", result); */
       setModal("hidden");
-      navigate(`/game-like-/${result.id}`);
+      navigate(`/game/${result.id}`, {
+        state: { screenshot: result.short_screenshots, name: result.name },
+      });
     };
     let placeholder = search.count;
     /*  console.log(placeholder); */
     return Loading ? (
       <div>en chargement</div>
     ) : (
-      <div className="header" onClick={handleClickOutside}>
+      <div className="headerBar" onClick={handleClickOutside}>
         <div className="logoimg">
           <i className="gg-pentagon-bottom-left"></i>
           <i className="gg-pentagon-bottom-right"></i>
           <i className="gg-pentagon-top-left"></i>
-          <i className="gg-pentagon-top-right"></i>{" "}
+          <i className="gg-pentagon-top-right"></i>
           <div className="logotext">GAMEPAD</div>
         </div>
-
         <div className="research">
           <input
             ref={(elem) => (ref.current[0] = elem)}
@@ -112,7 +115,28 @@ const Header = React.forwardRef(
               );
             })}
           </div>
-        </div>
+        </div>{" "}
+        {token ? (
+          <div className="connect">
+            <button
+              onClick={() => {
+                Cookies.remove("token");
+                window.location.reload();
+              }}
+            >
+              Se déconnecter
+            </button>
+          </div>
+        ) : (
+          <div className="connect">
+            <Link to="/login">
+              <button>Log in</button>
+            </Link>
+            <Link to="/signup">
+              <button>Sign Up</button>
+            </Link>
+          </div>
+        )}
       </div>
     );
   }

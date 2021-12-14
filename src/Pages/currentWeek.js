@@ -9,16 +9,16 @@ const CurrentWeek = ({ handleClickOutside }) => {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
-  const [id, setId] = useState("");
+  const [id, setId] = useState(null);
 
   const [isLoading, setIsLoading] = useState(true);
   const [ordering, setOrdering] = useState("added");
-  const [platform, setPlatform] = useState("");
+  const [platform, setPlatform] = useState(null);
   const [getPlatform, setGetPlatform] = useState(1);
 
   const handleClick = (elem) => {
     setId(elem);
-    navigate(`/game-like-/${elem.id}`);
+    navigate(`/game/${elem.id}`);
   };
   /*  GetMonday permet de renvoyer la semaine actuelle du lundi au dimanche. */
   const getMonday = (d, d2) => {
@@ -38,9 +38,11 @@ const CurrentWeek = ({ handleClickOutside }) => {
     Monday =
       Monday.getFullYear() +
       "-" +
-      (Monday.getMonth() + 1) +
+      (Monday.getMonth() + 1 >= 10
+        ? Monday.getMonth() + 1
+        : "0" + (Monday.getMonth() + 1)) +
       "-" +
-      Monday.getDate();
+      (Monday.getDate() >= 10 ? Monday.getDate() : "0" + Monday.getDate());
 
     Sunday =
       Sunday.getFullYear() +
@@ -55,25 +57,27 @@ const CurrentWeek = ({ handleClickOutside }) => {
   };
 
   let thisWeek = getMonday(new Date(), new Date());
+  /*   console.log(thisWeek); */
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       const response = await axios.get(
-        `http://localhost:4000/games?ordering=${ordering}&parent_platforms=${getPlatform}&dates=${thisWeek}`
+        `https://my-gamepad-backend.herokuapp.com/games?ordering=${ordering}&parent_platforms=${getPlatform}&dates=${thisWeek}`
       );
-      /*  console.log(response.data); */
+      console.log(response.data);
       setData(response.data);
       setIsLoading(false);
     };
-
     fetchData();
   }, [ordering, getPlatform]);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      const response = await axios.get(`http://localhost:4000/platform/list`);
+      const response = await axios.get(
+        `https://my-gamepad-backend.herokuapp.com/platform/list`
+      );
       /* console.log(response.data); */
       setPlatform(response.data);
     };
@@ -120,10 +124,11 @@ const CurrentWeek = ({ handleClickOutside }) => {
               <option value="name">Name</option>
 
               <option value="-released">Release date</option>
-              {/*  <option value="Popularity">Popularity</option> */}
+
               <option value="-rating">Average Rating</option>
             </select>
           </span>
+
           <span>
             <select
               className="select"
@@ -179,7 +184,6 @@ const CurrentWeek = ({ handleClickOutside }) => {
                                     />
                                   ) : item.platform.name === "PlayStation" ? (
                                     <FontAwesomeIcon
-                                      span
                                       className="iconPlateform"
                                       icon={["fas", "gamepad"]}
                                     />
@@ -235,7 +239,6 @@ const CurrentWeek = ({ handleClickOutside }) => {
                               handleClick(elem);
                             }}
                           >
-                            {/*  {console.log(id)} */}
                             Show more like this
                           </button>
                         </div>

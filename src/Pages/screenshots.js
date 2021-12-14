@@ -28,7 +28,7 @@ const Screenshot = ({ handleClickOutside }) => {
       <div
         style={{
           backgroundImage: `url(${location.state.background})`,
-          opacity: 0.65,
+          opacity: 0.25,
         }}
         className="backgroundGame "
       ></div>

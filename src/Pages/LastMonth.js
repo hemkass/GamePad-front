@@ -18,7 +18,7 @@ const LastMonth = ({ handleClickOutside }) => {
 
   const handleClick = (elem) => {
     setId(elem);
-    navigate(`/game-like-/${elem.id}`);
+    navigate(`/game/${elem.id}`);
   };
 
   // fonction pour calculer les 30 derniers jours
@@ -54,7 +54,7 @@ const LastMonth = ({ handleClickOutside }) => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get(
-        `http://localhost:4000/games?ordering=${ordering}&parent_platforms=${getPlatform}&dates=${last30days}`
+        `https://my-gamepad-backend.herokuapp.com/games?ordering=${ordering}&parent_platforms=${getPlatform}&dates=${last30days}`
       );
       console.log(response.data);
       setData(response.data);
@@ -67,7 +67,9 @@ const LastMonth = ({ handleClickOutside }) => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      const response = await axios.get(`http://localhost:4000/platform/list`);
+      const response = await axios.get(
+        `https://my-gamepad-backend.herokuapp.com/platform/list`
+      );
       /* console.log(response.data); */
       setPlatform(response.data);
     };
